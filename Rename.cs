@@ -16,7 +16,7 @@ namespace Rename
     public class Rename : GenericPlugin
     {
         private static readonly ILogger logger = LogManager.GetLogger();
-        // private readonly IResourceProvider resources;
+        private readonly IResourceProvider resources;
 
         private RenameSettingsViewModel settings { get; set; }
 
@@ -24,6 +24,7 @@ namespace Rename
 
         public Rename(IPlayniteAPI api) : base(api)
         {
+            resources = api.Resources;
             settings = new RenameSettingsViewModel(this);
             Properties = new GenericPluginProperties
             {
@@ -85,12 +86,8 @@ namespace Rename
         {
             yield return new GameMenuItem
             {
-                Description = "Name of game menu item",
-                Action = (_) =>
-                {
-                    // use args.Games to get list of games attached to the menu source
-                    Console.WriteLine("Invoked from game menu item!");
-                }
+                Description = resources.GetString("MenuItemDescription"),
+                Action = (_) => OnMenuAction()
             };
         }
 
@@ -99,8 +96,8 @@ namespace Rename
         {
             yield return new MainMenuItem
             {
-                // MenuSection = "@Rename",
-                Description = "Rename File Name",
+                MenuSection = "@Rename",
+                Description = resources.GetString("MenuItemDescription"),
                 Action = (_) => OnMenuAction()
             };
         }
@@ -122,15 +119,21 @@ namespace Rename
 
             foreach (var game in selectedGames)
             {
-                //try
-                //{
-                //    RenameFilesHelper.RenameFile(filePath, game.Name);
-                //}
-                //catch (Exception ex)
-                //{
-                //    logger.Error(ex, "Rename Failed!");
-                //    PlayniteApi.Dialogs.ShowErrorMessage($"Rename Failed：{ex.Message}", "error");
-                //}
+                var installDirectory = game.InstallDirectory;
+
+                // 获取游戏启动文件
+                var roms = game.Roms;
+                var filePath = roms[0].Path.Replace("{InstallDir}\\", installDirectory);
+
+                try
+                {
+                    RenameFilesHelper.RenameFile(filePath, game.Name);
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(ex, "Rename Failed!");
+                    PlayniteApi.Dialogs.ShowErrorMessage($"Rename Failed：{ex.Message}", "error");
+                }
             }
         }
     }
