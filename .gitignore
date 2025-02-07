@@ -1,0 +1,8 @@
+/*.dll
+/*.pdb
+/Playnite.SDK.xml
+
+bin/
+obj/
+.vs/
+packages/
