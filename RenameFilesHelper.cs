@@ -13,15 +13,24 @@ namespace Rename
 
     public static class RenameFilesHelper
     {
-        public static void RenameFile(string filePath, string newFileName)
+        public static string getAlteredRomPath(string romPath, string newFileName)
         {
-            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(newFileName))
+            return Path.Combine(Path.GetDirectoryName(romPath), newFileName + Path.GetExtension(romPath));
+        }
+
+        public static string getFormatPath(string installDirectory, string romPath)
+        {
+            return romPath.Replace("{InstallDir}\\", installDirectory);
+        }
+
+        public static void RenameFile(string oldPath, string newPath)
+        {
+            if (string.IsNullOrEmpty(oldPath) || string.IsNullOrEmpty(newPath))
             {
                 throw new ArgumentException("Path Is Empty!");
             }
 
-            var newFilePath = Path.Combine(Path.GetDirectoryName(filePath), newFileName);
-            File.Move(filePath, newFilePath);
+            File.Move(oldPath, newPath);
         }
     }
 }

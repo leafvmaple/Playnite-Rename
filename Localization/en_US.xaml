@@ -2,4 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="MenuItemDescription">"Rename File Name"</sys:String>
+
+    <!-- Rename prompt messages -->
+    <sys:String x:Key="RenameFilesHeader">The following files will be renamed:</sys:String>
+    <sys:String x:Key="RenameFilesSeparator"> → </sys:String>
+    <sys:String x:Key="RenameFilesFooter">Total {0} files, continue?</sys:String>
+    <sys:String x:Key="RenameFilesDialogTitle">Batch Rename Confirmation</sys:String>
 </ResourceDictionary>

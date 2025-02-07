@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 using System.IO;
+using System.Windows;
+using System.Collections.ObjectModel;
 
 namespace Rename
 {
@@ -117,24 +119,56 @@ namespace Rename
             //    return;
             //}
 
+            List<(string first, string second, Game third)> items = new List<(string first, string second, Game third)>();
             foreach (var game in selectedGames)
             {
                 var installDirectory = game.InstallDirectory;
-
-                // 获取游戏启动文件
                 var roms = game.Roms;
-                var filePath = roms[0].Path.Replace("{InstallDir}\\", installDirectory);
+                var romPath = RenameFilesHelper.getAlteredRomPath(roms[0].Path, game.Name);
+                var oldPath = RenameFilesHelper.getFormatPath(installDirectory, roms[0].Path);
+                var newPath = RenameFilesHelper.getFormatPath(installDirectory, romPath);
+                // game.Roms[0].Path = romPath;
+                items.Add((oldPath, newPath, game));
+            }
 
-                try
+            if (ShowDialog(items))
+            {
+                foreach (var (oldPath, newPath, game) in items)
                 {
-                    RenameFilesHelper.RenameFile(filePath, game.Name);
-                }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Rename Failed!");
-                    PlayniteApi.Dialogs.ShowErrorMessage($"Rename Failed：{ex.Message}", "error");
+                    try
+                    {
+                        RenameFilesHelper.RenameFile(oldPath, newPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "Rename Failed!");
+                        PlayniteApi.Dialogs.ShowErrorMessage($"Rename Failed：{ex.Message}", "error");
+                    }
                 }
             }
+        }
+
+        private bool ShowDialog(List<(string, string, Game)> items)
+        {
+            var messageBuilder = new StringBuilder();
+            messageBuilder.AppendLine($"{ resources.GetString("RenameFilesHeader") } \n");
+
+            foreach (var (oldPath, newPath, _) in items)
+            {
+                var oldName = Path.GetFileName(oldPath);
+                var newName = Path.GetFileName(newPath);
+                messageBuilder.AppendLine($"{ oldName } { resources.GetString("RenameFilesSeparator") } { newName }");
+            }
+
+            messageBuilder.AppendLine($"\n{ string.Format(resources.GetString("RenameFilesFooter"), items.Count) }");
+
+            var result = PlayniteApi.Dialogs.ShowMessage(
+                messageBuilder.ToString(),
+                resources.GetString("RenameFilesDialogTitle"),
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            return result == MessageBoxResult.Yes;
         }
     }
 }

@@ -2,4 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
     <sys:String x:Key="MenuItemDescription">智能命名文件</sys:String>
+        <!-- 重命名提示消息 -->
+    <sys:String x:Key="RenameFilesHeader">以下文件将被重命名：</sys:String>
+    <sys:String x:Key="RenameFilesSeparator"> → </sys:String>
+    <sys:String x:Key="RenameFilesFooter">共 {0} 个文件，是否继续？</sys:String>
+    <sys:String x:Key="RenameFilesDialogTitle">批量重命名确认</sys:String>
 </ResourceDictionary>
