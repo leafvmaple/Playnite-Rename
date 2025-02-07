@@ -1,5 +1,6 @@
 /*.dll
 /*.pdb
+/*.user
 /Playnite.SDK.xml
 
 bin/
