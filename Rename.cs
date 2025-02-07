@@ -124,7 +124,9 @@ namespace Rename
             {
                 var installDirectory = game.InstallDirectory;
                 var roms = game.Roms;
-                var romPath = RenameFilesHelper.getAlteredRomPath(roms[0].Path, game.Name);
+                if (roms == null || roms.Count == 0)
+                    continue;
+                var romPath = RenameFilesHelper.getAlteredRomPath(game);
                 var oldPath = RenameFilesHelper.getFormatPath(installDirectory, roms[0].Path);
                 var newPath = RenameFilesHelper.getFormatPath(installDirectory, romPath);
                 // game.Roms[0].Path = romPath;

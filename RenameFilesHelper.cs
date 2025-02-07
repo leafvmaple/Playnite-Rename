@@ -13,9 +13,14 @@ namespace Rename
 
     public static class RenameFilesHelper
     {
-        public static string getAlteredRomPath(string romPath, string newFileName)
+        public static string getAlteredRomPath(Game game)
         {
-            return Path.Combine(Path.GetDirectoryName(romPath), newFileName + Path.GetExtension(romPath));
+            var region = "";
+            if (game.Regions != null && game.Regions.Count > 0)
+                region = $" ({game.Regions[0].Name})" ;
+
+            return Path.Combine(Path.GetDirectoryName(game.Roms[0].Path),
+                $"{ game.Name }{ region }{ Path.GetExtension(game.Roms[0].Path) }");
         }
 
         public static string getFormatPath(string installDirectory, string romPath)
